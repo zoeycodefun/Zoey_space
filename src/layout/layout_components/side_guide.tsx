@@ -1,18 +1,35 @@
-import { useState } from "react";
+// side navigation component
+import React, { useState, useMemo, useCallback} from "react";
 import {Link, useLocation} from "react-router-dom";
-// 导入导航配置可变动数据
-import { guideConfig } from "../../config/guide_config";
-// 导入导航栏菜单项类型定义
-import type { GuideItem } from "../../types/guide_type";
+import { guideConfig, isValidGuideItem } from "../../config/guide_config";
+import type { GuideItem, GuideSubMenuItem } from "../../types/guide_type";
 
-// 定义组件属性类型
+// constants
+const ANIMATION_DURATION = 300;
+const MOBILE_BREAKPOINT = 'lg';
+const SIDEGUIDE_WIDTH = 256;
+const TOP_BAR_HEIGHT = 64;
+
+// types
 interface SideGuideProps {
-    isCollapsed: boolean; // 是否折叠侧边导航栏
-    // 定义移动端的导航抽屉
+    isCollapsed: boolean;
     isMobileOpen? : boolean;
-    // 移动端的关闭回调函数
     onMobileClose? : ()=> void;
 }
+interface NavigationState {
+    activeParentID: string | null;
+    isInSubMenu: boolean;
+}
+// custom hook to manage navigation state
+function useNavigationState(): [NavigationState, {
+    enterSubMenu: (parentID: string) => void;
+    exitSubMenu: () => void;
+    reset: () => void;
+}]
+
+
+
+
 // 侧边导航栏组件   
 export default function SideGuide({
     isCollapsed,
