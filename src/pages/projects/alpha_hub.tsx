@@ -2,7 +2,7 @@
 
 export default function AlphaHub(){
     return (
-        <div className="text-8xl">
+        <div className="text-xl">
             AlphaHub
             AlphaHub
             AlphaHub

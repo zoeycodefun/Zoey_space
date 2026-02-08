@@ -1,28 +1,36 @@
 /**
- * 导航配置管理：定义网站主导航和子导航内容（安全类型，导航一致与可拓展）
+ * Navigation configuration management
+ * type safety, consistency, extensibility
  */
+import type { GuideItem, GuideSubMenuItem } from '../types/guide_type';
 
-
-import type { GuideItem } from '../types/guide_type';
-// 导航项ID常量
+// Navigation item ID constants for main menu
 const NAVIGATION_IDS = {
     ABOUT: 'about_me_and_new',
+    TRADE: 'trade_market_analysis',
     PROJECTS: 'projects',
     WEB3: 'web3',
     INTERESTS: 'interests',
     ACADEMIC_RESEARCH: 'academic_research',
+    SOCIAL_MEDIA: 'social_media',
 } as const;
-// 子导航项ID常量
+// Sub-navigation item ID constants
 const SUB__NAVIGATION_IDS = {
-    // Projects 子导航
+    // Trade
+    CRYPTO_MARKET_ANALYSIS: 'crypto_market_analysis',
+
+    // Projects
     ALPHA_HUB: 'alpha_hub',
-    // Web3 子导航
+    AGENTS_CLUSTER: 'agents_cluster',
+
+    // Web3
     DATA_ANALYSIS: 'data_analysis',
     DEFI_ANNUAL_REPORT: 'defi_annual_report',
     PERSONAL_POST: 'personal_post',
     PROJECTS_RESEARCH: 'projects_research',
     LAWS_REGULATIONS: 'laws_regulations',
-    // Interests 子导航
+
+    // Interests
     MODELING_3D: '3d_modeling',
     LITERARY: 'literary',
     PODCAST: 'podcast',
@@ -34,21 +42,47 @@ const SUB__NAVIGATION_IDS = {
     MUSIC: 'music',
     CLOTH_DESIGN: 'cloth_design',
     GAME: 'game',
-    // Academic & Research 子导航
+
+    // Academic & Research
     PUBLICATIONS: 'publications',
     AI: 'ai',
     ECONOMY: 'economy',
     FINANCE: 'finance',
     MATH: 'math',
     LAWS: 'laws',
+
+    // Social Media
+    X: 'X',
+    GITHUB: 'github',
+    LINKEDIN: 'linkedin',
+    MEDIUM: 'medium',
+    SUBSTACK: 'substack',
+    TRUTH_SOCIAL: 'truth_social',
+    YOUTUBE: 'youtube',
+    REDDIT: 'reddit',
+    DEV_COMMUNITY: 'dev_community',
+    HACKER_NEWS: 'hacker_news',
 } as const;
 
-// 网站导航配置
-export const guideConfig: readonly GuideItem[] = [
+// Type safe navigation configuration
+export const guideConfig = [
+
     {
-        id: 'NAVIGATION_IDS.ABOUT',
+        id: NAVIGATION_IDS.ABOUT,
         label:'About',
         path:'/',
+    },
+
+    {
+        id:NAVIGATION_IDS.TRADE,
+        label:'Trade & Market Analysis',
+        children: [
+            {
+                id: SUB__NAVIGATION_IDS.CRYPTO_MARKET_ANALYSIS,
+                label: 'Crypto Market Analysis',
+                path: '/trade/crypto_market_analysis'
+            }
+        ]
     },
 
     {
@@ -56,12 +90,18 @@ export const guideConfig: readonly GuideItem[] = [
         label:'Projects',
         children:[
             {
-                id:'SUB__NAVIGATION_IDS.ALPHA_HUB',
+                id: SUB__NAVIGATION_IDS.ALPHA_HUB,
                 label:'Alpha Hub',
                 path:'/projects/alpha_hub'
             },
+            {
+                id: SUB__NAVIGATION_IDS.AGENTS_CLUSTER,
+                label:'Agents Cluster',
+                path:'/projects/agents_cluster'
+            }
         ],
     },
+
     {
         id:NAVIGATION_IDS.WEB3,
         label:'Web3',
@@ -90,10 +130,10 @@ export const guideConfig: readonly GuideItem[] = [
                 id:SUB__NAVIGATION_IDS.LAWS_REGULATIONS,
                 label:'Laws & Regulations',
                 path:'/web3/laws_regulations'
-            },
-            
+            },  
         ]
     },
+
     {
         id:NAVIGATION_IDS.INTERESTS,
         label:'Interests',
@@ -154,7 +194,7 @@ export const guideConfig: readonly GuideItem[] = [
                 path:'/interests/game'
             },
     
-        ]
+        ],
     },
 
     {
@@ -193,14 +233,90 @@ export const guideConfig: readonly GuideItem[] = [
             },
         ],
     },
-] as const;
-// 类型守卫
+    {
+        id:NAVIGATION_IDS.SOCIAL_MEDIA,
+        label:'Social Media',
+        children:[
+            {
+                id:SUB__NAVIGATION_IDS.X,
+                label:'X',
+                path:'/social_media/X'
+            },
+            {
+                id:SUB__NAVIGATION_IDS.GITHUB,
+                label:'GitHub',
+                path:'/social_media/github'
+            },
+            {
+                id:SUB__NAVIGATION_IDS.LINKEDIN,
+                label:'LinkedIn',
+                path:'/social_media/linkedin'
+            },
+            {
+                id:SUB__NAVIGATION_IDS.MEDIUM,
+                label:'Medium',
+                path:'/social_media/medium'
+            },
+            {
+                id:SUB__NAVIGATION_IDS.SUBSTACK,
+                label:'Substack',
+                path:'/social_media/substack'
+            },
+            {
+                id:SUB__NAVIGATION_IDS.TRUTH_SOCIAL,
+                label:'Truth Social',
+                path:'/social_media/truth_social'
+            },
+            {
+                id:SUB__NAVIGATION_IDS.YOUTUBE,
+                label:'YouTube',
+                path:'/social_media/youtube'
+            },
+            {
+                id:SUB__NAVIGATION_IDS.REDDIT,
+                label:'Reddit',
+                path:'/social_media/reddit'
+            },
+            {
+                id:SUB__NAVIGATION_IDS.DEV_COMMUNITY,
+                label:'Dev Community',
+                path:'/social_media/dev_community'
+            },
+            {
+                id:SUB__NAVIGATION_IDS.HACKER_NEWS,
+                label:'Hacker News',
+                path:'/social_media/hacker_news'
+            },
+        ],
+    },
+] as const satisfies readonly GuideItem[];
+
+// type guard
 export function isValidGuideItem(item: unknown): item is GuideItem {
-  return (
-    typeof item === 'object' &&
-    item !== null &&
-    typeof (item as GuideItem).id === 'string' &&
-    typeof (item as GuideItem).label === 'string' &&
-    (typeof (item as GuideItem).path === 'string' || Array.isArray((item as GuideItem).children))
-  );
+    if (typeof item !== 'object' || item === null) {
+        return false;
+    }
+    const guideItem = item as Partial<GuideItem>;
+    if (typeof guideItem.id !== 'string' || typeof guideItem.label !== 'string') {
+        return false;
+    }
+    const haspath = typeof guideItem.path === 'string';
+    const hasChildren = Array.isArray(guideItem.children) && 
+    guideItem.children.every((child: unknown): child is GuideSubMenuItem => 
+    typeof child === 'object' &&
+    child !== null &&
+    typeof (child as GuideSubMenuItem).id === 'string' &&
+    typeof (child as GuideSubMenuItem).label === 'string' &&
+    typeof (child as GuideSubMenuItem).path === 'string'
+    );
+    return haspath || hasChildren;
+}
+// utility function to get navigation item by ID
+export function getNavigationItemByID(id: string): GuideItem | undefined {
+    return guideConfig.find(item => item.id === id);
+}
+// utility function to get sub navigation item by ID
+export function getSubNavigationItemByID(parentId: string, childId: string): GuideSubMenuItem | undefined {
+    const parentItem = getNavigationItemByID(parentId);
+    return parentItem?.children?.find(child => child.id === childId);
 }

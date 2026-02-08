@@ -5,6 +5,7 @@ import Layout from './layout/layout'
 import AboutPage from './pages/about'
 //projects界面
 import AlphaHub from './pages/projects/alpha_hub'
+import AgentsClusterPage from './pages/projects/agents_cluster'
 
 // web3界面
 import DataAnalysis from './pages/web3/data_analysis'
@@ -47,6 +48,7 @@ function App() {
           <Route index element={<AboutPage/>}></Route>
           {/** 项目界面路由 */}
           <Route path='/projects/alpha_hub' element={<AlphaHub/>}></Route>
+          <Route path='/projects/agents_cluster' element={<AgentsClusterPage/>}></Route>
 
           {/** web3界面路由 */}
           <Route path='/web3/data_analysis' element={<DataAnalysis/>}></Route>
